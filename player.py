@@ -29,22 +29,7 @@ class Hand():
     def value(self):
         # logic values
 
-class Deck():
-    """
-    main collection of cards to be delt from
-    """
-    def __init__(self):
-        # initialize deck with x number of cards
-        self.cards = [Card(suit,rank) for suit in SUITS for rank in RANKS]
-        self.shuffle()
-    def shuffle(self):
-        # randomize position of cards
-        random.shuffle(self.cards)
 
-    def nextCard(self):
-        #return next card in deck
-    def getDeck(self):
-        #return current cards in deck(list)
 
 class Game():
     #deck
