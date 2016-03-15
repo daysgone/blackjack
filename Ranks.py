@@ -1,5 +1,5 @@
 # MODEL
-ranks = {
+RANKS = {
         2: 'two',
         3: 'three',
         4: 'four',
@@ -33,28 +33,29 @@ ranks = {
 
 
 def check(key):
-    if key in ranks:
+    if key in RANKS:
         return key
     else:
-        print "key error"
-        return None
-        #raise KeyError('please enter a correct rank')
+        #print "key error"
+        #return None
+        raise KeyError('please enter a correct rank')
 
 
 def rank_name(key):
     # .get returns None if key not found in dict
-    return ranks.get(key)
+    return RANKS.get(key)
 
 
 def rank_char(full_name):
-    for key, value in ranks.items():
+    for key, value in RANKS.items():
         if value == full_name:
             return key
     return 'None'
 
-#test code
+'''test code
 
-#print rank_name('B')
-#print rank_char('three')
-#print check(1)
-#print check(12)
+print rank_name('A')
+print rank_char('three')
+print check(1)
+print check(12)
+'''
