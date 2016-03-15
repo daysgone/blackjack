@@ -5,12 +5,12 @@ import Ranks
 class Card(object):
     def __init__(self, rank, suite):
         # stop everything if not a valid rank or suite
-        self.rank = rank
-        self.suite = suite
-
+        self._rank = rank
+        self._suite = suite
         self.hidden = False
+
         # special value cases
-        if self.rank == 'A':
+        if self._rank == 'A':
             self.value = 11
         elif rank in ['K', 'Q', 'J']:
             self.value = 10
@@ -24,6 +24,12 @@ class Card(object):
     @rank.setter
     def rank(self, val):
         self._rank = Ranks.check(val)
+
+    def is_ace(self):
+        if self.rank == 'A':
+            return True
+        else:
+            False
 
     @property
     def suite(self):
@@ -46,10 +52,13 @@ class Card(object):
         if self.hidden:
             return '[X]'
         else:
-            return '[' + Ranks.rank_name(self.rank) + ' of ' + Suites.suite_name(self.suite) + ']'
+            return '[' + Ranks.rank_name(self._rank) + ' of ' + Suites.suite_name(self._suite) + ']'
 
-''' Tester code '''
-#test = Card(9, 'H')
-#print test
-#print test.value
-#print Suites.suite_name(test.suite)
+''' Tester code
+test = Card('K', 'H')
+print test
+print test.value
+print test.rank
+print test.is_ace()
+print Suites.suite_name(test.suite)
+'''

@@ -36,6 +36,7 @@ def check(key):
     if key in ranks:
         return key
     else:
+        print "key error"
         return None
         #raise KeyError('please enter a correct rank')
 

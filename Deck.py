@@ -9,7 +9,7 @@ class Deck(object):
     def __init__(self):
         # change deck size by number of suites and ranks in the external files
         self.cards = [Card.Card(rank, suite) for suite in Card.Suites.suites for rank in Card.Ranks.ranks]
-        #self.shuffle()
+        self.shuffle()
 
     def __str__(self):
         print ','.join(str(p) for p in self.cards)
