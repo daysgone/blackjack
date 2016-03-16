@@ -1,5 +1,5 @@
 # MODEL
-suites = {
+SUITES = {
         'C': 'Clubs',
         'D': 'Diamonds',
         'H': 'Hearts',
@@ -8,18 +8,18 @@ suites = {
 
 
 def check(key):
-    if key in suites:
+    if key in SUITES:
         return key
     else:
         raise KeyError('please enter a correct suite')
 
 
 def suite_name(char):
-    return suites.get(char)
+    return SUITES.get(char)
 
 
 def suite_char(fullName):
-    for key, value in suites.items():
+    for key, value in SUITES.items():
         if value == fullName:
             return key
     return None

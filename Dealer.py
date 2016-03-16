@@ -1,4 +1,4 @@
-import Player
+from Player import Player
 
 
 class Dealer(Player):
@@ -9,5 +9,4 @@ class Dealer(Player):
         -hits if score < 17
             else stand
     """
-    def __init__(self):
-        self.name = "Dealer"
+    pass

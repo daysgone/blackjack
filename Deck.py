@@ -1,4 +1,4 @@
-import Card
+from Card import *
 import random
 
 
@@ -8,7 +8,7 @@ class Deck(object):
     """
     def __init__(self):
         # change deck size by number of suites and ranks in the external files
-        self.cards = [Card.Card(rank, suite) for suite in Card.Suites.suites for rank in Card.Ranks.ranks]
+        self.cards = [Card(rank, suite) for suite in Suites.SUITES for rank in Ranks.RANKS]
         self.shuffle()
 
     def __str__(self):
@@ -17,7 +17,7 @@ class Deck(object):
     def shuffle(self):
         random.shuffle(self.cards)
 
-    def choose(self):
+    def get_card(self):
         # returns last item of list by default
         return self.cards.pop()
 
@@ -44,9 +44,11 @@ class Deck(object):
     # def get_picked(self):
 
 '''test
+print "-----Start Deck module test -----"
 test = Deck()
 new_card = test.choose()
 print test.cards
 print test.length()
 print new_card
+print "-----End Deck module test ------"
 '''
