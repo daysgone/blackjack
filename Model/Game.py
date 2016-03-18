@@ -3,16 +3,22 @@ from Player import Player
 from Dealer import Dealer
 from Shoe import Shoe
 
-#import View
-
 DEBUG = False
 
 
 class Game(object):
-    def __init__(self, players, deck_size=1):
+    def __init__(self):
+        self.name = 'Blackjack'
         self.dealer = Dealer('Dealer')
+        self.players = None
+        self.shoe = None
+
+    def start_game(self, players, deck_size=1):
         self.players = [Player(player) for player in players]
         self.shoe = Shoe(deck_size)
+
+    def quit_game(self):
+        pass
 
     def place_bets(self):
         pass
@@ -25,7 +31,7 @@ class Game(object):
         # deal 1 card to every player and dealer face down
         for player in self.players:
             # can only be one hand to start per player
-            # TODO should be first card dealt face down, but not doing that
+            # TODO should have first card dealt face down, but not doing that for readability on single screen
             player.hit(player.hand[0], self.shoe.draw(True))
 
         # deal card to dealer
@@ -63,59 +69,42 @@ class Game(object):
         # print "{0} now added to {1}'s hand ".format(cur_player.hand[hand].list[-1], cur_player.name )
 
         return bust, cur_hand
-        '''
-        if cur_hand.is_bust:
-            #print "{0} busted".format(cur_player.name)
-            return True
-        else:
-            return False
-        '''
 
     @staticmethod
     def stand(player, hand):
-        print player.name + " stands with a score of " + str(hand.score)
-        return True
+        msg = player.name + " stands with a score of " + str(hand.score)
+        return msg
 
     @staticmethod
     def show_card(player, hand=0):
         for card in player.hand[hand].list:
             card.visibility = True
 
+    def check_winner(self):
+        # if dealer busts
+        if self.dealer.hand[0].is_bust:
+            # check players for bust
+            for p in self.players:
+                for h in p.hand:
+                    if not h.is_bust:
+                        h.status = "win"
+        else:
+            for p in self.players:
+                self.compare(p, self.dealer)
+
     @staticmethod
     def compare(player, dealer):
-        verdict = None
         dealer_score = dealer.hand[0].score
         # compare score to player
-        print "dealer: {0}, {1}: {2}".format(dealer_score, player.name, player.hand[0].score)
+        #print "dealer: {0}, {1}: {2}".format(dealer_score, player.name, player.hand[0].score)
         for h in player.hand:
             if not h.is_bust:
                 if h.score > dealer_score:
-                    print "win"
-                elif h.score == dealer_score:
-                    print "tie"
+                    h.status = "win"
+                elif h.score == dealer_score and not dealer.hand[0].is_bust:
+                    h.status = "tie"
                 else:
-                    print "lost"
-            else:
-                print "already busted cant win"
-
-    def check_winner(self):
-        for p in self.players:
-            self.compare(p, self.dealer)
-
-
-
-
-
-#UI = View()
-
-
-
-
-
-
-
-
-
+                    h.status = "lost"
 
 
 if DEBUG:
@@ -130,7 +119,11 @@ if DEBUG:
 
     # deal cards
     blackjack.deal_cards()
+    #show current hands
+    for p in players:
+        print p.name + " currently has " + str(p.hand[0])
 
+    print "Dealer currently has " + str(dealer.hand[0])
     # if dealers first card is an Ace
         # ask players if they want insurance
             # half of orig bet

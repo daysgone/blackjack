@@ -48,6 +48,7 @@ class Player (object):
 
         if hand.score > 21:
             hand.is_bust = True
+            hand.status = "lost"
 
         return hand.is_bust
 
@@ -71,7 +72,8 @@ class Hand(object):
     """
     def __init__(self):
         self.list = []
-        self._score = 0
+        self._score = 0  # TODO has to use _score since no setter for this property
+        self.status = None
         self.is_bust = False
 
     @property
@@ -106,6 +108,14 @@ class Hand(object):
         #print "{0} current score".format(score_sum)
         self._score = score_sum
         return self._score
+
+    @property
+    def status(self):
+        return self._status
+
+    @status.setter
+    def status(self, val):
+        self._status = val
 
     def __str__(self):
         # return the cards in hand with correct visibility
