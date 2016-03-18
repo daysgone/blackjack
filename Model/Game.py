@@ -21,36 +21,47 @@ class Game(object):
         pass
 
     def place_bet(self, player, bet):
+        """
+        only accepts 0 < valid bets <= player.score
+        will make player inactive if bet of 0 is placed
+        :param player: current player
+        :param bet: integer
+        :return:
+        """
         # bet only called on first hand of player
-        print "GAME player " + player.name
-        player.bet = bet
-        print "GAME bet of " + str(player.bet)
+        player.bet = int(bet)
 
-        # a zero bet should remove player from game
+        if player.bet == 0:
+            player.is_active = False
+            return True
+        elif player.bet == -1:
+            return False
+        else:
+            return True
 
-        return player.bet
-
-    def deal_cards(self):
+    def deal_cards(self, dealer_face=True):
         """
-        will deal out 1 card to every player and dealer face down
-        will deal out 1 card to every player and dealer face up
+        will deal out 1 card to every player and dealer (default face up)
         """
-        # deal 1 card to every player and dealer face down
-        for player in self.players:
-            # can only be one hand to start per player
-            # TODO should have first card dealt face down, but not doing that for readability on single screen
-            player.hit(player.hands[0], self.shoe.draw(True))
+        if len(self.players): # dont deal cards if no players left to play
+            for player in self.players:
+                # can only be one hand to start per player
+                player.hit(player.hands[0], self.shoe.draw())
 
-        # deal card to dealer
-        self.dealer.hit(self.dealer.hands[0], self.shoe.draw())
+            # deal card to dealer
+            self.dealer.hit(self.dealer.hands[0], self.shoe.draw(dealer_face))
+        else:
+            print "GAME: no players left to deal to should exit out of game here"
 
-        # deal 1 card to every player and dealer face up
-        for player in self.players:
-            # can only be one hand to start per player
-            player.hit(player.hands[0], self.shoe.draw(True))
-
-        # deal card to dealer
-        self.dealer.hit(self.dealer.hands[0], self.shoe.draw(True))
+    def remove_players(self):
+        # remove players from game since is_active is set to false: bet of 0, 0 points left
+        new_players = []
+        for p in self.players:
+            if p.is_active:
+                new_players.append(p)
+            else:
+                print "GAME: removed {0}".format(p.name)
+        self.players = new_players
 
     @staticmethod
     def insurance(player, taken=False):
@@ -72,6 +83,7 @@ class Game(object):
         # cur_player = self.players[player]  # change from index to object
         cur_player = player
         cur_hand = cur_player.hands[hand]
+        # TODO maybe make dealer deal instead of draw from shoe directly?
         bust = cur_player.hit(cur_hand, self.shoe.draw(True))
         # print "{0} now added to {1}'s hand ".format(cur_player.hand[hand].list[-1], cur_player.name )
 
@@ -113,10 +125,22 @@ class Game(object):
             for p in self.players:
                 self.compare(p, self.dealer)
 
+    @staticmethod
+    def collect_winnings(player):
+        for h in player.hands:
+            if h.status == "win":
+                player.points = player.bet * 2
+            if h.status == 'tie':
+                player.points = player.bet
+            else:
+                if player.points == 0 :
+                    player.is_active = False
+
+
     def clear_hands(self):
+        # reset all hands of players for start of new game
         for p in self.players:
             p.clear_hands()
-
         self.dealer.clear_hands()
 
     @staticmethod

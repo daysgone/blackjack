@@ -11,54 +11,67 @@ class Controller(object):
         self.start_game()
 
     def new_game(self):
-        # players stay the same
-        self.view.clear()
-        # clear out player hands
-        self.game.clear_hands()
-        self.start_game()
+        if len(self.game.players):
+            # players stay the same
+            self.view.clear()
+            # clear out player hands
+            self.game.clear_hands()
+            self.start_game()
 
     def start_game(self):
+        # show current points for players
+        for p in self.game.players:
+            # make this a unique function
+            self.view.show_msg("{0} currently has {1} points ".format(p.name, p.points))
+
         self.bet()
-        self.deal()
+        if self.deal():  # only false if no players left
+            ''' Not functional at this time
+            # if dealer's face up card is an Ace players can purchase insurance for half their bet
+            if self.game.check_dealer_card_ace():
+                self.view.show_msg("dealer shows an ace, purchase insurance?")
+                # would loop through all players hands and ask for insurance
 
-        # if dealer's face up card is an Ace players can purchase insurance for half their bet
-        if self.game.check_dealer_card_ace():
-            self.view.show_msg("dealer shows an ace, purchase insurance?")
-            # would loop through all players hands and ask for insurance
+            # flip over 1st dealt Dealer card
+            self.view.show_msg("dealer flips over card")
+            '''
+            self.game.show_card(self.game.dealer)
 
-        # flip over 1st dealt Dealer card
-        self.view.show_msg("dealer flips over card")
-        self.game.show_card(self.game.dealer)
+            # if dealer shows blackjack take orig bets from those who did not buy insurance
+            # if insurance not bought only players with blackjack keep orig bet
 
-        # if dealer shows blackjack take orig bets from those who did not buy insurance
+            self.play()
 
-        # if insurance not bought only players with blackjack keep orig bet
-
-        self.play()
-
-        if self.view.new_game():
-            self.new_game()
+            if self.view.new_game():
+                self.new_game()
 
     def bet(self):
         for p in self.game.players:
+            print "CONTROLLER: place bet"
             valid_bet = False
-            # keeps asking for bet till valid
-            # TODO needs an exit case of 0, in which player would be removed from game
+            # keeps asking for bet till valid one used
             while not valid_bet:
                 valid_bet = self.game.place_bet(p, self.view.get_bet(p))
+        self.game.remove_players()  # strip out players that bet 0
 
     def deal(self):
-        # wait for players to make bets
-        if self.view.deal():
-            self.view.clear()
-            # deal cards
-            self.game.deal_cards()
+        print str(len(self.game.players))
+        if len(self.game.players):
+            # wait for players to make bets
+            if self.view.deal():
+                self.view.clear()
 
-            # update view with dealt cards
-            for p in self.game.players:
-                self.view.update_hand(p)
+                self.game.deal_cards(False)  # deal cards, dealer face down
+                self.game.deal_cards(True)  # dealer faceup
 
-            self.view.update_hand(self.game.dealer)
+                # update view with dealt cards
+                for p in self.game.players:
+                    self.view.update_hand(p)
+
+                self.view.update_hand(self.game.dealer)
+                return True
+        else:
+            return False
 
     # TODO i think some of this code should be in model
     def play(self):
@@ -100,11 +113,13 @@ class Controller(object):
                 for p in self.game.players:
                     if not p.hands[0].is_bust:
                         self.view.status(p)
+                        self.game.collect_winnings(p)
             else:
                 for p in self.game.players:
                     if not p.hands[0].is_bust:
                         # need to check for tie case
                         self.view.status(p)
+                        self.game.collect_winnings(p)
 
         else:
             self.view.status(self.game.dealer)

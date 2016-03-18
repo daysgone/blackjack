@@ -7,9 +7,10 @@ if DEBUG:
 class Player (object):
     def __init__(self, name='player', starting_points=100):
         self.name = name
+        self.is_active = True
         self.points = starting_points  # persistent throughout games
         self.bet = 0
-        self.hands = [Hand()]  # player could have multiple hands if split
+        self.hands = [Hand()] # player could have multiple hands if split
 
     @property
     def name(self):
@@ -25,14 +26,7 @@ class Player (object):
 
     @points.setter
     def points(self, val):
-        '''
-        p = int(val)
-        temp_points = self.points - p
-        if temp_points <= 0:
-            # player is broke, should never get negative
-            p = 0
-        '''
-        self.__points = int(val)  # points = temp_points
+        self.__points = int(val)
 
     @property
     def bet(self):
@@ -40,12 +34,19 @@ class Player (object):
 
     @bet.setter
     def bet(self, val):
+        """
+        -check bet and make sure it wont set you broke
+        -update score with removal of bet
+        :param val:
+        :return: current bet if valid else -1
+        """
         bet = int(val)
         # make sure the bet does not make points go below 0
         valid_bet = self.points - bet
+        #print "player" + str(valid_bet)
         if valid_bet < 0:
-            # bet greater then player's points
-            self.__bet = False
+            # bet greater then player's points so not valid
+            self.__bet = -1  # cant use False since you can bet 100% of your points
         else:
             self.points -= bet
             self.__bet = bet
@@ -59,11 +60,11 @@ class Player (object):
         :return: false if hand score is greater then 21
         """
         hand.cards.append(card)
-        hand.score()
+        hand.score = 0  # number shouldnt matter just need to use as a setter
 
         if hand.score > 21:
             hand.is_bust = True
-            hand.status = "lost"
+            hand.status = "loser"
 
         return hand.is_bust
 
@@ -81,8 +82,7 @@ class Player (object):
         self.__hands = val
 
     def clear_hands(self):
-        #print "cleared hands of {0} ".format(self.name)
-
+        # print "cleared hands of {0} ".format(self.name)
         del self.hands[:]  # removes all hands
         self.hands.append(Hand())  # create new base hand
 

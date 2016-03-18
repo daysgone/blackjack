@@ -11,7 +11,7 @@ class Shoe(object):
     def __init__(self, decks=1):
         self.shoe = [Deck() for _ in xrange(decks)]
 
-    def draw(self, vis=False):
+    def draw(self, vis=True):
         # pick a card from a random deck in the shoe
         i = random.randint(0, len(self.shoe)-1)
         #print "draw card from deck {0}".format(i+1)
