@@ -9,11 +9,11 @@ class Dealer(Player):
         -hits if score < 17
             else stand
     """
-
+    ''' TODO maybe call this instead of directly from shoe
     def deal(self, hidden=True):
         # get card from shoe and return it
         pass
-
+    '''
     def hit(self, hand, card):
         if hand.score >= 17:
             print "dealer cannot hit"

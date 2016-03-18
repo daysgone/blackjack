@@ -26,22 +26,36 @@ class UI(object):
         return self.players
 
     @staticmethod
+    def new_game():
+        answer = raw_input("\t\tNew Game? (Y,N) : ")
+        if answer == 'Y' or answer == 'y' or answer == "yes":
+            return True
+        else:
+            return False
+
+    @staticmethod
     def deal():
         # TODO do somethign better here
-        answer = raw_input("Ready to Deal?")
+        answer = raw_input("\t\tReady to Deal?")
         #if answer:
         return True
 
     @staticmethod
     def update_hand(player, hand=0):
         if isinstance(hand, (int, long)):
-            print player.name + "'s hand now is " + str(player.hand[hand])
+            print player.name + "'s hand now is " + str(player.hands[hand])
         else:
             print player.name + "'s hand now is " + str(hand)
 
+    def get_bet(self, player):
+        return raw_input("{0} please enter your bet (up to {1}): ".format(player.name, player.points))
+
+    def show_bet(self, player):
+        print "{0} bets {1} out of their {2} points".format(player.name, player.bet, player.points)
+
     @staticmethod
     def choose():
-        answer = raw_input("\t(H)it or (S)tand? : ")
+        answer = raw_input("\t\t(H)it or (S)tand? : ")
         if answer == 'H' or answer == 'h' or answer == "hit":
             return True
         elif answer == 'S'or answer == 's' or answer == "stand":
@@ -50,32 +64,36 @@ class UI(object):
     @staticmethod
     def hit(player, hand=0):
         if isinstance(hand, (int, long)):
-            print player.name + " hits on the hand of " + str(player.hand[hand])
+            print player.name + " hits on the hand of " + str(player.hands[hand])
         else:
             print player.name + " hits on the hand of " + str(hand)
 
     @staticmethod
     def stand(player, hand=0):
         if isinstance(hand, (int, long)):
-            print player.name + " stands on the hand of " + str(player.hand[hand])
+            print player.name + " stands on the hand of " + str(player.hands[hand])
         else:
             print player.name + " stands on the hand of " + str(hand)
 
     @staticmethod
     def busted(player, hand=0):
         if isinstance(hand, (int, long)):
-            print "BUSTED: " + player.name + "'s hand of " + str(player.hand[hand]) + " :BUSTED"
+            print "BUSTED: " + player.name + "'s hand of " + str(player.hands[hand]) + " :BUSTED"
         else:
             print "BUSTED: " + player.name + "'s hand of  " + str(hand) + " :BUSTED"
 
     @staticmethod
-    def winner(player, hand=0):
+    def status(player, hand=0):
         if isinstance(hand, (int, long)):
-            print "WINNER: " + player.name + " with a hand of " + str(player.hand[hand]) + " :WINNER"
+            print player.name + " " + player.hands[hand].status + " with a hand of " + str(player.hands[hand])
         else:
-            print "WINNER: " + player.name + "'s hand of  " + str(hand) + " :WINNER"
+            print player.name + " " + player.hands.status + " with a hand of  " + str(hand)
 
 
+
+    @staticmethod
+    def show_msg(msg):
+        print msg
 
 '''
 # start up game
