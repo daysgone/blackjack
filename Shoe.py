@@ -1,6 +1,8 @@
 from Deck import Deck
 import random
 
+DEBUG = False
+
 
 class Shoe(object):
     """
@@ -8,21 +10,19 @@ class Shoe(object):
     """
     def __init__(self, decks=1):
         self.shoe = [Deck() for _ in xrange(decks)]
-        '''
-        for deck in self.shoe:
-            for card in deck.cards:
-                print card
-        '''
-    def deal(self):
+
+    def draw(self, vis=False):
         # pick a card from a random deck in the shoe
         i = random.randint(0, len(self.shoe)-1)
-        print "picked card from deck {0}".format(i+1)
-        return self.shoe[i].get_card()
+        #print "draw card from deck {0}".format(i+1)
+        card = self.shoe[i].draw()
+        if vis:
+            card.visibility = True
+        return card
 
-
-'''test code
-print "------ Start Shoe test code -------"
-test = Shoe(2)
-print(test.deal())
-print "------ End Shoe test code -------"
-'''
+if DEBUG:
+    '''test code'''
+    print "------ Start Shoe test code -------"
+    test = Shoe(2)
+    print(test.draw())
+    print "------ End Shoe test code -------"

@@ -1,6 +1,8 @@
 from Card import *
 import random
 
+DEBUG = False
+
 
 class Deck(object):
     """
@@ -8,21 +10,27 @@ class Deck(object):
     """
     def __init__(self):
         # change deck size by number of suites and ranks in the external files
-        self.cards = [Card(rank, suite) for suite in Suites.SUITES for rank in Ranks.RANKS]
+        self.cards = [] #[Card(rank, suite) for suite in SUITES for rank in RANKS]
         self.shuffle()
 
     def __str__(self):
-        print ','.join(str(p) for p in self.cards)
+        return ','.join(str(p) for p in self.cards)
 
     def shuffle(self):
         random.shuffle(self.cards)
 
-    def get_card(self):
+    def draw(self):
         # returns last item of list by default
         return self.cards.pop()
 
-    def length(self):
-        return len(self.cards)
+    @property
+    def cards(self):
+        # return cards in current deck
+        return self._cards
+
+    @cards.setter
+    def cards(self, val):
+        self._cards = [Card(rank, suite) for suite in SUITES for rank in RANKS]
 
 ''' not needed if i just pop off list
     @property
@@ -43,12 +51,11 @@ class Deck(object):
     # TODO do i need to keep track of already used cards?
     # def get_picked(self):
 
-'''test
-print "-----Start Deck module test -----"
-test = Deck()
-new_card = test.choose()
-print test.cards
-print test.length()
-print new_card
-print "-----End Deck module test ------"
-'''
+if DEBUG:
+    print "-----Start Deck module test -----"
+    test = Deck()
+    print len(test.cards)
+    new_card = test.draw()
+    print len(test.cards)
+    print new_card
+    print "-----End Deck module test ------"
