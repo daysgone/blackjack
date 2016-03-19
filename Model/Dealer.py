@@ -15,8 +15,5 @@ class Dealer(Player):
         pass
     '''
     def hit(self, hand, card):
-        if hand.score >= 17:
-            print "dealer cannot hit"
-            self.stand()
-        else:
-            return super(Dealer, self).hit(hand, card)
+        if self.hands[0].score <= 16:
+            super(Dealer, self).hit(hand, card)

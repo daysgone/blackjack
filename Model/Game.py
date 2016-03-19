@@ -89,10 +89,12 @@ class Game(object):
 
         return bust, cur_hand
 
+    ''' this should only be a view method
     @staticmethod
     def stand(player, hand):
         msg = player.name + " stands with a score of " + str(hand.score)
         return msg
+    '''
 
     @staticmethod
     def show_card(player, hand=0):
@@ -105,6 +107,7 @@ class Game(object):
         for card in player.hands[hand].cards:
             card.visibility = True
 
+    ''' use again when insurance feature added
     def check_dealer_card_ace(self):
         # return True if 2nd card is an ace
         # needed to check for insurance
@@ -112,7 +115,7 @@ class Game(object):
             return True
         else:
             return False
-
+    '''
     def check_winner(self):
         # if dealer busts
         if self.dealer.hands[0].is_bust:
@@ -130,12 +133,11 @@ class Game(object):
         for h in player.hands:
             if h.status == "win":
                 player.points = player.bet * 2
-            if h.status == 'tie':
+            elif h.status == "tie":
                 player.points = player.bet
             else:
-                if player.points == 0 :
+                if not player.points:
                     player.is_active = False
-
 
     def clear_hands(self):
         # reset all hands of players for start of new game

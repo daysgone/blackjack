@@ -68,10 +68,12 @@ class Player (object):
 
         return hand.is_bust
 
+    '''
     # TODO probably not a needed method
     def stand(self):
         # do nothing score should be up to date
         pass
+    '''
 
     @property
     def hands(self):

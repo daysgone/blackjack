@@ -20,8 +20,10 @@ class UI(object):
         :return: list of player names
         """
         prompt = int(raw_input("How many players? : "))
+        self.clear()
+
         for n in xrange(1, prompt+1):
-            self.players.extend(raw_input("Please enter Player{0}'s name? : ".format(n)))
+            self.players.append(raw_input("Please enter Player{0}'s name? : ".format(n)))
             self.clear()
         return self.players
 
@@ -43,11 +45,12 @@ class UI(object):
     @staticmethod
     def update_hand(player, hand=0):
         if isinstance(hand, (int, long)):
-            print player.name + "'s hand now is " + str(player.hands[hand])
+            print player.name + "'s hand " + str(player.hands[hand])
         else:
-            print player.name + "'s hand now is " + str(hand)
+            print player.name + "'s hand " + str(hand)
 
     def get_bet(self, player):
+        print "{0} you currently have {1} points ".format(player.name, player.points)
         return raw_input("{0} please enter your bet (up to {1}) a bet of 0 will remove you from game: ".format(player.name, player.points))
 
     def show_bet(self, player):
@@ -63,18 +66,11 @@ class UI(object):
             return False
 
     @staticmethod
-    def hit(player, hand=0):
+    def move(player, move, hand=0):
         if isinstance(hand, (int, long)):
-            print player.name + " hits on the hand of " + str(player.hands[hand])
+            print player.name + move + "with score of " + str(player.hands[hand].score)
         else:
-            print player.name + " hits on the hand of " + str(hand)
-
-    @staticmethod
-    def stand(player, hand=0):
-        if isinstance(hand, (int, long)):
-            print player.name + " stands on the hand of " + str(player.hands[hand])
-        else:
-            print player.name + " stands on the hand of " + str(hand)
+            print player.name + move + "with score of " + str(hand)
 
     @staticmethod
     def busted(player, hand=0):

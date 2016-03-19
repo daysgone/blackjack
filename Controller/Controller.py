@@ -1,3 +1,5 @@
+import time
+
 class Controller(object):
     def __init__(self, game, view):
         self.game = game
@@ -19,27 +21,36 @@ class Controller(object):
             self.start_game()
 
     def start_game(self):
+        '''
         # show current points for players
         for p in self.game.players:
             # make this a unique function
             self.view.show_msg("{0} currently has {1} points ".format(p.name, p.points))
+        '''
 
         self.bet()
+
         if self.deal():  # only false if no players left
-            ''' Not functional at this time
+
+            ''' TODO
             # if dealer's face up card is an Ace players can purchase insurance for half their bet
             if self.game.check_dealer_card_ace():
                 self.view.show_msg("dealer shows an ace, purchase insurance?")
+                time.sleep(2)
                 # would loop through all players hands and ask for insurance
+                # insurance would be removed from points
 
             # flip over 1st dealt Dealer card
+            # makes more sense if insurance is used
             self.view.show_msg("dealer flips over card")
-            '''
+            time.sleep(2)
+            self.view.clear()
             self.game.show_card(self.game.dealer)
 
-            # if dealer shows blackjack take orig bets from those who did not buy insurance
-            # if insurance not bought only players with blackjack keep orig bet
-
+            # if dealer has blackjack
+            #   # take bets from players who didn't buy insurance or hand is blackjack
+            # players with active bets would still continue to play
+            '''
             self.play()
 
             if self.view.new_game():
@@ -47,29 +58,34 @@ class Controller(object):
 
     def bet(self):
         for p in self.game.players:
-            print "CONTROLLER: place bet"
             valid_bet = False
             # keeps asking for bet till valid one used
             while not valid_bet:
                 valid_bet = self.game.place_bet(p, self.view.get_bet(p))
+            self.view.clear()
+
         self.game.remove_players()  # strip out players that bet 0
 
     def deal(self):
-        print str(len(self.game.players))
         if len(self.game.players):
-            # wait for players to make bets
-            if self.view.deal():
-                self.view.clear()
 
-                self.game.deal_cards(False)  # deal cards, dealer face down
-                self.game.deal_cards(True)  # dealer faceup
+            self.view.show_msg("Dealer is dealing cards")  # TODO put this in view?
+            time.sleep(2)
+            self.view.clear()
 
-                # update view with dealt cards
-                for p in self.game.players:
-                    self.view.update_hand(p)
+            # this should be used with insurance added
+            # self.game.deal_cards(False)  # deal cards, dealer's face down
 
-                self.view.update_hand(self.game.dealer)
-                return True
+            self.game.deal_cards(True)  # deals cards, dealer's face up
+            self.game.deal_cards(True)  # deals cards, dealer's face up
+
+            # update view with dealt cards
+            for p in self.game.players:
+                self.view.update_hand(p)
+
+            self.view.update_hand(self.game.dealer)
+            time.sleep(5)
+            return True
         else:
             return False
 
@@ -80,12 +96,13 @@ class Controller(object):
         for p in self.game.players:
             keep_going = True
             while keep_going:
+                self.view.clear()
                 self.view.update_hand(self.game.dealer)
                 self.view.update_hand(p)
 
                 if self.view.choose():
-                    self.view.clear()
-                    self.view.hit(p)
+                    self.view.move(p, ' hits ')
+                    #self.view.clear()
 
                     bust, hand = self.game.hit(p)
 
@@ -94,9 +111,11 @@ class Controller(object):
                         busted += 1
                         keep_going = False
                 else:
-                    self.view.clear()
-                    self.view.stand(p)
+                    #self.view.clear()
+                    self.view.move(p, ' stands ')
+
                     keep_going = False
+                time.sleep(2)
 
         # if both players bust then no need to have dealer hit
         if busted != len(self.game.players):
@@ -122,6 +141,7 @@ class Controller(object):
                         self.game.collect_winnings(p)
 
         else:
+            self.game.dealer.hands[0].status = 'wins'
             self.view.status(self.game.dealer)
 
 # if dealer under 21 pay players with a higher score
