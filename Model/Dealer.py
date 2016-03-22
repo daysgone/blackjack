@@ -15,5 +15,12 @@ class Dealer(Player):
         pass
     '''
     def hit(self, hand, card):
-        if self.hands[0].score <= 16:
-            super(Dealer, self).hit(hand, card)
+        # TODO need to not make this happen on the deal
+        if len(self.hands[0].cards) >= 2:
+            print "this happened:" + str(len(self.hands[0].cards))
+            while self.hands[0].score <= 16:
+                super(Dealer, self).hit(hand, card)
+        else:
+            if self.hands[0].score <= 16:
+                print "score less then 17"
+                super(Dealer, self).hit(hand, card)
