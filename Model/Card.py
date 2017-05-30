@@ -54,7 +54,6 @@ class Card(object):
         self.visibility = vis
         self.is_ace = False
 
-
         # special value cases
         if self.rank == 'A':
             self.is_ace = True

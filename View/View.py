@@ -1,18 +1,23 @@
 import os
+import platform
 
 from Model.Game import Game
 
 
 class UI(object):
     def __init__(self):
+        self.type = type  # 0 for command line 1 for GUI,2 for both?
         self.clear()
         self.players = []
         self.dealer = 'Dealer'
 
     @staticmethod
     def clear():
-        os.system('clear')# linux/osx
-        #os.system('cls') # windows
+        #  TODO cover all platform types
+        if platform.system() == 'Windows':
+            os.system('cls')
+        else:  # linux/osx
+            os.system('clear')
 
     def set_players(self):
         """
@@ -39,7 +44,8 @@ class UI(object):
     @staticmethod
     def deal():
         # TODO do somethign better here
-        answer = raw_input("\t\tReady to Deal?")
+        # answer =
+        raw_input("\t\tReady to Deal?")
         return True
 
     @staticmethod
@@ -49,11 +55,13 @@ class UI(object):
         else:
             print player.name + "'s hand " + str(hand)
 
-    def get_bet(self, player):
+    @staticmethod
+    def get_bet(player):
         print "{0} you currently have {1} points ".format(player.name, player.points)
         return raw_input("{0} please enter your bet (up to {1}) a bet of 0 will remove you from game: ".format(player.name, player.points))
 
-    def show_bet(self, player):
+    @staticmethod
+    def show_bet(player):
         print "{0} bets {1} out of their {2} points".format(player.name, player.bet, player.points)
 
     @staticmethod
@@ -89,3 +97,7 @@ class UI(object):
     @staticmethod
     def show_msg(msg):
         print msg
+
+
+class GUI(UI):
+    print 'test'
